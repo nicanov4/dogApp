@@ -13,7 +13,7 @@ const breeds = (state = { items: [] }, action) => {
     }
 }
 
-const breed = (state = { photos: [] }, action ) => {
+const breed = (state = { photos: [], subBreeds: []}, action ) => {
     switch (action.type) {
     case "FETCH_BREED_PHOTOS": {
 	return {
@@ -25,9 +25,23 @@ const breed = (state = { photos: [] }, action ) => {
     }
 }
 
+const subBreeds = (state = { items: [] }, action) => {
+    switch (action.type) {
+    case "FETCH_SUBBREEDS": {
+	return {
+	    items: action.payload
+	}
+    }
+    default:
+	return state
+    }
+}
+
+
 const rootReducer = combineReducers({
     breeds,
-    breed
+    breed,
+    subBreeds
 });
 
 export default rootReducer;

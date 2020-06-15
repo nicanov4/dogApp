@@ -4,6 +4,8 @@ import { Switch } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import BreedsList from './BreedsList';
 import Breed from './Breed';
+import 'bootstrap/dist/css/bootstrap.css';
+
 
 const App = () => (
         <div>

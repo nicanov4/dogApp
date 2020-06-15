@@ -18,29 +18,16 @@ export function loadBreed(breedName) {
     }
 }
 
-//Get collection of images based on selected Breed
-export const selectBreed = (breedName) => {
-    return (dispatch) => {
-	return fetch(`https://dog.ceo/api/breed/${breedName}/images`)
-	    .then(response => response.json())
-	    .then(breed => {
-		dispatch(getBreed(breed.message))
-	    })
-	    .catch(error => console.log(error));
-    };
-}
-
-//Get list of ALL subBreeds
-export const loadSubBreeds = (breedName) => {
-    return (dispatch) => {
+export function loadSubBreeds(breedName) {
+    return function(dispatch) {
 	return fetch(`https://dog.ceo/api/breed/${breedName}/list`)
 	    .then(response => response.json())
 	    .then(subBreeds => {
-		dispatch(getAllSubBreeds(subBreeds.message))
+		dispatch({type: "FETCH_SUBBREEDS", payload: subBreeds.message})
 	    })
-	    .catch(error => console.log(error));
     };
 }
+
 
 //Get collection of images based on selected subBreed
 export const selectSubBreed = (breedName, subBreedName) => {

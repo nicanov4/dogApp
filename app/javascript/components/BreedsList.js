@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import {connect} from 'react-redux';
+import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import { loadAllBreeds } from '../actions/Actions';
 
 const mapStateToProps = state => {
@@ -35,6 +36,9 @@ class BreedsList extends React.Component {
     render() {
 	return (
 		<div>
+		<Breadcrumb>
+		<Breadcrumb.Item active>Breeds List</Breadcrumb.Item>
+		</Breadcrumb>
 		<h2>Breeds</h2>
 		<ul>{this.renderBreeds()}</ul>
 		</div>
