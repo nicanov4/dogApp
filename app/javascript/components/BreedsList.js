@@ -40,6 +40,9 @@ class BreedsList extends React.Component {
 		<Breadcrumb.Item active>Breeds List</Breadcrumb.Item>
 		</Breadcrumb>
 		<h2>Breeds</h2>
+		<Link to={`/favorites`}>
+		Link to your favorite breeds
+	    </Link>
 		<ul>{this.renderBreeds()}</ul>
 		</div>
 	);
