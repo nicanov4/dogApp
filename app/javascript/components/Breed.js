@@ -4,14 +4,19 @@ import PropTypes from 'prop-types';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Button from 'react-bootstrap/Button';
 import {connect} from 'react-redux';
-import { loadBreed, loadSubBreeds } from '../actions/Actions';
+import { loadBreed, loadSubBreeds, loadFavorites, loadFavorite } from '../actions/Actions';
+import FavoriteButton from './shared/FavoriteButton';
 
 const mapStateToProps = state => {
     const { breed } = state;
     const { subBreeds } = state;
+    const { favorites } = state;
     return {
 	subBreeds: subBreeds.items,
 	breedPhotos: breed.photos,
+	isFetchingBreed: breed.isFetching,
+	isFetchingSubBreeds: subBreeds.isFetching,
+	favorites: favorites.items
     };
 };
 
@@ -26,6 +31,7 @@ class Breed extends React.Component {
     }
 
     componentDidMount() {
+	this.props.dispatch(loadFavorites());
 	this.props.dispatch(loadBreed(this.state.breedName));
 	this.props.dispatch(loadSubBreeds(this.state.breedName));
     }
@@ -59,9 +65,14 @@ class Breed extends React.Component {
     }
     
     render() {
+	if (this.props.isFetchingBreed || this.props.isFetchingSubBreeds) return (
+	    <h2>Loading</h2>
+	);
 	const breedPhotos = this.props.breedPhotos;
 	const subBreedPhotos = breedPhotos
 	      .filter(el => (el.indexOf(this.state.filter) > -1)); 
+
+	const currentFav = this.props.favorites.filter(f => f.breed === this.state.breedName);
 	return (
 		<div>
 		<Breadcrumb>
@@ -69,6 +80,7 @@ class Breed extends React.Component {
 		<Breadcrumb.Item active>{this.state.breedName}</Breadcrumb.Item>
 		</Breadcrumb>
 		<h2>{this.state.breedName}</h2>
+		<FavoriteButton breed={this.state.breedName} favorite={currentFav[0]}/>
 		<h4>Filter by sub-breeds:</h4>
 		{this.renderSubBreeds()}
 	        {this.renderPhotos(subBreedPhotos)}

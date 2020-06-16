@@ -1,5 +1,8 @@
+import axios from "axios";
+
 export function loadAllBreeds() {
     return function(dispatch) {
+	dispatch({ type: "FETCH_BREEDS_REQUEST"});
 	return fetch('https://dog.ceo/api/breeds/list/all')
 	    .then(response => response.json())
 	    .then(breeds => {
@@ -10,6 +13,7 @@ export function loadAllBreeds() {
 
 export function loadBreed(breedName) {
     return function(dispatch) {
+	dispatch({ type: "FETCH_BREED_REQUEST"});
 	return fetch(`https://dog.ceo/api/breed/${breedName}/images`)
 	    .then(response => response.json())
 	    .then(breed => {
@@ -20,6 +24,7 @@ export function loadBreed(breedName) {
 
 export function loadSubBreeds(breedName) {
     return function(dispatch) {
+	dispatch({ type: "FETCH_SUBBREEDS_REQUEST"});
 	return fetch(`https://dog.ceo/api/breed/${breedName}/list`)
 	    .then(response => response.json())
 	    .then(subBreeds => {
@@ -28,19 +33,53 @@ export function loadSubBreeds(breedName) {
     };
 }
 
-
-//Get collection of images based on selected subBreed
-export const selectSubBreed = (breedName, subBreedName) => {
-    return (dispatch) => {
-	return fetch(`https://dog.ceo/api/breed/${breedName}/${subBreedName}/images`)
-	    .then(response => response.json())
-	    .then(subBreed => {
-		dispatch(getSubBreed(subBreed.message))
+export function loadFavorite(breed) {
+    return function(dispatch) {
+	axios.get(`/favorites/${breed}.json`)
+	    .then((response) => {
+		dispatch({type: "FETCH_FAVORITE", payload: response.data})
 	    })
-	    .catch(error => console.log(error));
     };
 }
 
+export function loadFavorites() {
+    return function(dispatch) {
+	dispatch({ type: "FETCH_FAVORITES_REQUEST"});
+	axios.get('/favorites.json')
+	    .then((response) => {
+		dispatch({type: "FETCH_FAVORITES", payload: response.data})
+	    })
+    };
+}
+
+export function addFavorite(favorite) {
+    return function(dispatch) {
+	axios.post('/favorites.json', favorite)
+	    .then((response) => {
+		const breed = response.data
+		dispatch({
+		    type: 'ADD_FAVORITE',
+		    payload: {
+			breed,
+		    },
+		})
+	    })
+    }
+}
+
+export function deleteFavorite(favoriteId) {
+    return function(dispatch) {
+	axios.delete(`/favorites/${favoriteId}.json`)
+	    .then((response) => {
+		dispatch({
+		    type: 'DELETE_FAVORITE',
+		    payload: {
+			favoriteId,
+		    },
+		})
+	    })
+    }
+}
 //Get a random breed image (for welcome page)
 export const loadRandomBreed = () => {
     return (dispatch) => {
