@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import {connect} from 'react-redux';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
+import Button from 'react-bootstrap/Button';
 import { loadFavorites } from '../actions/Actions';
 import axios from "axios";
 
@@ -12,6 +13,7 @@ class MyPets extends React.Component {
 	this.state = {
 	    photos: []
 	}
+	this.deletePhoto = this.deletePhoto.bind(this);
     }
 
     componentDidMount() {
@@ -20,12 +22,24 @@ class MyPets extends React.Component {
 		this.setState({photos: response.data});
 	    });
     }
+
+    deletePhoto(photo) {
+	const sure = window.confirm('Are you sure?');
+	if(sure) {
+	    axios.delete(`/photos/${photo.id}.json`)
+	        .then((response) => {
+		    console.log(response.data);
+		});
+	    this.setState({photos: this.state.photos.filter(p => p.id !== photo.id)});
+	}
+    }
     
     renderMyPets() {
 	const photos = this.state.photos;
 	return photos.map((photo) => (
 		<li key={photo.id}>
 		<img src={photo.image}/>
+		<Button onClick={() => { this.deletePhoto(photo)}} variant="danger">Delete Photo?</Button>
 		</li>
 	));
     }
